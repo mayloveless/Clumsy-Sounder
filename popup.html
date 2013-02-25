@@ -1,0 +1,262 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+        @font-face {
+		    font-family: 'modern_pictogramsnormal';
+		    src: url('font/modernpics-webfont.eot');
+		    src: url('font/modernpics-webfont.eot?#iefix') format('embedded-opentype'),
+		         url('font/modernpics-webfont.woff') format('woff'),
+		         url('font/modernpics-webfont.ttf') format('truetype'),
+		         url('font/modernpics-webfont.svg#modern_pictogramsnormal') format('svg');
+		    font-weight: normal;
+		    font-style: normal;
+		}
+
+        	body{
+        		margin: 0;
+        		padding:0;
+        		font-family: '微软雅黑';
+                background: url('bg.jpg');
+        		
+        	}
+        	#loginForm{
+        		padding:20px;
+                width: 230px;
+        	}
+        	.form input{
+        		background-color: #E9F4E9;
+        		padding: 5px;
+        		line-height: 20px;
+        		width: 90%;
+        	}
+        	#submit{
+        		text-decoration: none;
+        		border-radius: 4px;
+        		line-height: 20px;
+        		font-size: 20px;
+    			margin:20px 0 0 80px;
+    			padding:5px 10px;
+    			background-color: #4CBEFF;
+    			display: inline-block;
+    			color: #ffffff;
+                height: 40px;
+                width: 70px;
+                cursor: pointer;
+        	}
+        	.title{
+        		font-size: 20px;
+        	}
+
+        	.font{
+				font-size:24px;
+				font-family:'modern_pictogramsnormal';
+				color:#888;
+				margin-left: 4px;
+				cursor: pointer;
+                 -webkit-user-select: none; 
+        	}
+        	a:hover{
+        		color:#000;
+        	}
+        	#like:hover{
+        		color:red;
+        	}
+        	.liking:hover{
+        		color:red;
+        	}
+        	.liking{
+        		color:red;
+        	}
+        	#channel{
+        		width: 90px;
+        	}
+        	.current,#play{
+        		color:#000;
+        	}
+        	#info{
+        		font-size: 14px;
+        		width: 100%;
+        	}
+        	#range{
+        		height: 5px;
+        		width:100px;
+        		margin-left: 100px;
+        	}
+            #fn{
+                width: 300px;
+                float: left;
+             
+            }
+            .share{
+                /*width: 100%;
+                float:left;
+                多分享情况
+                */
+                /*单分享*/
+                float:right;
+            }
+            #shareSina{
+               margin-left: 10px;
+            }
+
+            #cs_info{
+                padding-left: 20px;
+                background: #fff;
+                color: #9BC7DE;
+            }
+
+            #searchPanle{
+               min-height: auto;
+               overflow: hidden;
+               width: 300px;
+            }
+            .sPanleTitle{
+                background: #fff;
+                color:#8AA8BD;
+                font-size: 16px;
+                margin-top: 35px;
+                padding-left: 5px;
+            }
+            #extra{
+                list-style: none;
+                width: 100%;
+                padding: 0 0 2px 0;
+                border-bottom: 2px dashed #fff;
+            }
+            #extra li{
+               display: inline-block;
+               margin-left: 8px;
+               font-size: 14px;
+            }
+            .del{
+                margin-left:5px;
+                cursor: pointer;
+                color: #fff;
+            }
+            .del:hover{
+                color: #000;
+            }
+            #extra li .num{
+                display: none;
+            }
+            .searchArea{
+                margin-top: 10px;
+                position: relative;
+            }
+            .searchArea p{
+                background: #fff;
+                color:#8AA8BD;
+                margin: 0;
+                border-bottom: 1px solid #999;
+                padding-left: 5px;
+            }
+            .searchArea a{
+                font-size: 12px;
+                color: #999;
+            }
+            #searchRes{
+                background: #fff;
+                color: #8AA8BD;
+                position: relative;
+                overflow: hidden;
+            }
+            #searchOne .name{
+                position: absolute;
+                top:5px;
+                left:50px;
+                color: #000;
+                font-weight: bold;
+            }
+            #searchOne .intro{
+                position: absolute;
+                left: 50px;
+                top:30px;
+                font-size: 14px;
+            }
+
+            #add{
+                padding:5px 10px ;
+                position: absolute;
+                bottom:-30px;;
+                right: 0px;
+                background: #4CBEFF;
+                color: #fff;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 4px
+            }
+            #searchSave{
+                padding:5px 10px ;
+                background: #4CBEFF;
+                color: #fff;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 4px;
+                margin :0 auto;
+                width: 70px;
+                display: block;
+            }
+           
+        </style>
+    </head>
+    <body>
+        <form id="loginForm" class="form" type="post" action="http://douban.fm/j/login">
+            <p class='title'>Clumzy Sounder</p>
+            <input type="hidden" name="source" value="radio"/>
+            <!-- <input type="hidden" name="remember" value="on"/>
+             -->
+            <input type="text" id="username" name="alias" placeholder="用户名" required=""/>
+            <input type="password" name="form_password" id="password" placeholder="密码" required=""/>
+            <input type="hidden" name="captcha_id" id="captcha_id" value=""/>
+            <input type="text" name="captcha_solution" id="captcha_solution" placeholder="验证码" required=""/>
+            <img id="form_img" src="" alt=""/>
+            <input type="submit" id="submit" value="登陆" />
+            <p id="tip"></p>
+        </form>
+        <div id="fn" style="display:none;">
+                <a id="like"  title="取消喜欢" class="font">j</a>
+                <a id="trash" title="垃圾"class="font">I</a>
+                <a id="prev" title="上一曲" class="font"><</a>
+                <a id="play" title="暂停" class="font">7</a>
+                <a id="next" title="下一曲" class="font">></a>
+                <a id="repeat" title="循环" class="font" >R</a>
+                <a id="lrc" title="显示歌词" class="font">K</a>
+                <a id="changeChannel" title="增加频道" class="font">s</a>
+            	<select id="channel">
+            		<option value="-3">红心兆赫</option>
+            		<option value="0">私人兆赫</option>
+            		<option value="1">华语</option>
+            		<option value="2">欧美</option>
+            		<option value="9">轻音乐</option>
+                    <option value="27">古典</option>
+                    <option value="61">新歌</option>       
+            	</select>
+            	<p id="cs_info"></p>
+
+            <div class="share">
+                <img id="shareSina" title="将歌曲分享到新浪微博" src="http://simg.sinajs.cn/blog7style/images/common/share.gif" />
+            </div>
+        </div>
+
+        <div id="searchPanle" style="display:none;">
+            
+            <div class="searchArea">
+                <p>搜索：<input id="search" placeholder="回车搜索，只显示一条" type="input"/>
+                <a href="http://douban.fm" title="douban.fm" target="blank">搜索更多</a></p>
+                <div id="searchRes">
+                    
+                </div>
+                <span id="add" style="display:none;">增加</span>
+            </div>
+            <p class="sPanleTitle">所有新加频道：</p>
+            <ul id="extra"></ul>
+
+            <span id="searchSave">保存并退出</span>
+        </div>
+
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/popup.js"></script>
+    </body>
+</html>

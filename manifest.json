@@ -1,0 +1,23 @@
+﻿{
+  "manifest_version": 2,
+  "name": "Clumsy Sounder",
+  "version": "0.9",
+  "description": "豆瓣fm Chrome插件",
+  "background": {
+    "page": "background.html"
+  },
+  "icons": { "48": "icon.png" },
+  "permissions": 
+	[    
+		"tabs",  
+		"http://*/*",		
+		"bookmarks",    
+		"unlimitedStorage"  ,
+		"cookies",
+    "notifications"
+	], 
+  "browser_action": {
+    "default_icon": "icon.png",
+	  "default_popup": "popup.html"
+  }
+}
