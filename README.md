@@ -17,6 +17,6 @@ Chrome Extention for douban.fm
   
 undone：
 ---------
-  1、Notifytion bug<br>
+  1、Notification bug<br>
   2、部分歌词不准、符号不准确<br>
   
