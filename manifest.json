@@ -1,7 +1,7 @@
 ﻿{
   "manifest_version": 2,
   "name": "Clumsy Sounder",
-  "version": "0.9",
+  "version": "0.7",
   "description": "豆瓣fm Chrome插件",
   "background": {
     "page": "background.html"

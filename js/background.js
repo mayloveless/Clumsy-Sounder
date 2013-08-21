@@ -91,30 +91,23 @@ $(document).ready(function(){
 	    			list.push(data.song[i]);
 	    		}	    		
 	            if (fn) {fn();}
+	            currentStatus();
 	        }
 	    });
 	};
 
-	var notifyFn = function(){
-		if(parseInt(localStorage.isLrc)){
-			if(notification){
-				currentStatus();
-				return;
-			}
-			//桌面通知初始化
-			notification = webkitNotifications.createHTMLNotification(
-		 		'notification.html' 
-			);					
-			notification.show();
-		}else{
-			if(notification){
-				notification.close();
-			}
+	var creatNotification = function(lrc,title,pic){
+		//桌面通知初始化
+		if(notification){
+			notification.close();
 		}
-		currentStatus();
-		notification.onclose = function(){
-			notification = null;
-		};
+		var picture = pic ? pic : 'icon.png'
+		notification = webkitNotifications.createNotification(
+	 		picture ,
+	 		title ,
+	 		lrc
+		);					
+		notification.show();
 	};
 		
 	var playSongs = function(){
@@ -129,7 +122,9 @@ $(document).ready(function(){
 			
 			current++;
 			getLrc(list[current-1].title,list[current-1].artist);
-			notifyFn();
+			if(parseInt(localStorage.isLrc)){
+				creatNotification('请稍后……','Clumsy Sounder');
+			}
 		}else{		
 			getList(type,channel,playSongs);
 		}
@@ -209,12 +204,15 @@ $(document).ready(function(){
 
 				case 'lrc' :
 				localStorage.isLrc = 1;
-				notifyFn();
+				creatNotification('请稍后……','Clumsy Sounder')
 				break;
 
 				case 'unlrc' :
 				localStorage.isLrc = 0;
-				notifyFn();
+				//notifyFn();
+				if(notification){
+					notification.close();
+				}
 				break;
 				
 				case 'changeChannel':
@@ -225,7 +223,10 @@ $(document).ready(function(){
 				isLoop = 0;
 				playSongs();
 				//由于歌词有延时，所以发个省略号
-				fm.postMessage({lrc:'……'},"notification.html");
+				if(parseInt(localStorage.isLrc)){
+					creatNotification('请稍后……','Clumsy Sounder');
+				}
+				currentStatus();
 				break;
 
 				case 'prev':
@@ -234,7 +235,10 @@ $(document).ready(function(){
 					current = current-2;
 					playSongs();
 				}
-				fm.postMessage({lrc:'……'},"notification.html");
+				if(parseInt(localStorage.isLrc)){
+					creatNotification('请稍后……','Clumsy Sounder');
+				}
+				currentStatus();
 				break;
 
 				case 'like' :
@@ -302,28 +306,27 @@ $(document).ready(function(){
 				fm.postMessage({cmd: 'shareInfo',title:song.title,artist:song.artist,url:song.songId,pic:song.picture,from:msg.from});
 				break;
 
-				case 'notify':				
-				fm.postMessage({title:list[current-1].title+' by '+list[current-1].artist},"notification.html");
-				var curTime = parseInt($('#player')[0].currentTime);
-				var lrc = list[current-1].lrc;
-				if(!lrc){fm.postMessage({lrc:'……'},"notification.html");}
-				if(lrc && lrc[curTime] && notifyLrc != lrc[curTime]){
-					//因为popup页面关了，所以发送错误？？？如何监听popup页面？？
-					//notify 也是
-					fm.postMessage({lrc:lrc[curTime]},"notification.html");
-					//if(notification){
-					//	chrome.extension.getViews({type:"notification"}).inserLrc(lrc[curTime]);
-					//}
-					notifyLrc = lrc[curTime];
-				}
-				
-				break;
 			}
 		}.bind(this));
 
-		//根据歌曲时间循环 请求桌面提示页向background 请求歌词
+		//根据歌曲时间循环 向notification设置歌词
+		var noUp = false;
 		$('#player')[0].addEventListener('timeupdate', function(event){	
-			fm.postMessage({getLrc:1});
+			var curTime = parseInt($('#player')[0].currentTime);
+			var lrc = list[current-1].lrc;
+			if(notification && lrc && parseInt(localStorage.isLrc)){		
+				if(lrc && lrc[curTime] && notifyLrc != lrc[curTime]){
+					var thisSong = list[current-1];
+					creatNotification(lrc[curTime],thisSong.title+' by '+thisSong.artist,thisSong.picture);
+					notifyLrc = lrc[curTime];
+				}
+				noUp = false;
+				return false;
+			}
+			if(!lrc && !noUp && curTime > 10){
+				creatNotification('非常抱歉，没有找到歌词','Clumsy Sounder');
+				noUp = true;
+			}
 		}, false);
 
 		fm.onDisconnect.addListener(function (fm) {

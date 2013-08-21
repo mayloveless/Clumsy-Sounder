@@ -1,8 +1,4 @@
-/*
-*1、bug:next prev pop页字不变
-*2、Uncaught Error: Attempting to use a disconnected port object 
-*3、优化UI
-*/
+
 var dfm = {};
 
 $(document).ready(function(){
@@ -29,9 +25,7 @@ $(document).ready(function(){
      				
 		fm.onMessage.addListener(function (msg) {
 			switch (msg.cmd) {
-
 				case 'build':
-
 				if(!msg.isPlay){
 					fm.postMessage({cmd: 'play'});	
 				}	
