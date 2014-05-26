@@ -1,4 +1,4 @@
-﻿
+
 $(document).ready(function(){
 	$('#player')[0].volume  = 1;
 	list =[];
@@ -98,16 +98,24 @@ $(document).ready(function(){
 
 	var creatNotification = function(lrc,title,pic){
 		//桌面通知初始化
-		if(notification){
-			notification.close();
+		if( notification ){
+			//notification.close();
+			chrome.notifications.clear( notification,function(){} );
 		}
 		var picture = pic ? pic : 'icon.png'
-		notification = webkitNotifications.createNotification(
-	 		picture ,
-	 		title ,
-	 		lrc
-		);					
-		notification.show();
+
+		chrome.notifications.create(
+		    'ClumsySounder',{   
+			    type: 'basic', 
+			    iconUrl: picture, 
+			    title: title, 
+			    message: lrc
+		    },
+			function(notificationId) {
+				notification = notificationId;
+			} 
+		);
+
 	};
 		
 	var playSongs = function(){
@@ -211,7 +219,8 @@ $(document).ready(function(){
 				localStorage.isLrc = 0;
 				//notifyFn();
 				if(notification){
-					notification.close();
+					//notification.close();
+					chrome.notifications.clear( notification,function(){} );
 				}
 				break;
 				
