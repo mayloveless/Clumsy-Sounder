@@ -96,20 +96,23 @@ $(document).ready(function(){
 	    });
 	};
 
-	var creatNotification = function(lrc,title,pic){
+	var creatNotification = function(lrc,title,pic,noticeTime){
 		//桌面通知初始化
 		if( notification ){
 			//notification.close();
 			chrome.notifications.clear( notification,function(){} );
 		}
-		var picture = pic ? pic : 'icon.png'
+		var picture = pic ? pic : 'icon.png';
 
+		var eventTime = noticeTime ? noticeTime : 0;
 		chrome.notifications.create(
 		    'ClumsySounder',{   
 			    type: 'basic', 
 			    iconUrl: picture, 
 			    title: title, 
+			   // eventTime:Date.now() + eventTime*1000,
 			    message: lrc
+			    
 		    },
 			function(notificationId) {
 				notification = notificationId;
@@ -326,7 +329,15 @@ $(document).ready(function(){
 			if(notification && lrc && parseInt(localStorage.isLrc)){		
 				if(lrc && lrc[curTime] && notifyLrc != lrc[curTime]){
 					var thisSong = list[current-1];
-					creatNotification(lrc[curTime],thisSong.title+' by '+thisSong.artist,thisSong.picture);
+					var noticeTime = 0;
+					for(var key in lrc){
+						if (key > curTime){
+							noticeTime = key - curTime;
+							break;
+						}
+					}
+
+					creatNotification(lrc[curTime],thisSong.title+' by '+thisSong.artist,thisSong.picture,noticeTime);
 					notifyLrc = lrc[curTime];
 				}
 				noUp = false;
