@@ -179,7 +179,7 @@
             #add{
                 padding:5px 10px ;
                 position: absolute;
-                bottom:-30px;;
+                bottom:0px;;
                 right: 0px;
                 background: #4CBEFF;
                 color: #fff;
@@ -243,14 +243,17 @@
         <div id="searchPanle" style="display:none;">
             
             <div class="searchArea">
-                <p>搜索：<input id="search" placeholder="回车搜索，只显示一条" type="input"/>
+                <p>搜频道：<input id="search" placeholder="回车搜索，只显示一条" type="input"/>
                 <a href="http://douban.fm" title="douban.fm" target="blank">搜索更多</a></p>
                 <div id="searchRes">
                     
                 </div>
                 <span id="add" style="display:none;">增加</span>
             </div>
-            <p class="sPanleTitle">所有新加频道：</p>
+            <div class="searchArea">
+              <p>搜专辑：<input id="addProgram" placeholder="输入专辑网址，回车添加" type="input"/></p>
+             </div>
+            <p class="sPanleTitle">所有新加频道/专辑：</p>
             <ul id="extra"></ul>
 
             <span id="searchSave">保存并退出</span>
