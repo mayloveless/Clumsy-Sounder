@@ -27,7 +27,7 @@ $(document).ready(function(){
 			switch (msg.cmd) {
 				case 'build':
 				if(!msg.isPlay){
-					fm.postMessage({cmd: 'play'});	
+					fm.postMessage({cmd: 'play',playChannel:!!channel});	
 				}	
 				if(msg.pause){
 					$('#play').html('P');
@@ -64,7 +64,7 @@ $(document).ready(function(){
 						var single = list[i].split('|');
 						var isHas = 0;
 						for(var j=0;j<$('#channel>option').length;j++){
-					    	if(parseInt($('#channel>option')[j].value,10) === parseInt(single[0],10)){
+					    	if( $('#channel>option')[j].value ===single[0] ){
 					    		isHas = 1;
 					    		break;
 					    	}
@@ -76,6 +76,7 @@ $(document).ready(function(){
 					
 					
 				}
+
 				if(msg.channel){
 					for(var i=0;i<$('#channel>option').length;i++){
 				    	if($('#channel>option')[i].value==msg.channel){
@@ -252,19 +253,61 @@ $(document).ready(function(){
 		$('.del').unbind().bind('click',del);
 	});
 
+	$('#addProgram').bind('keydown',function(event){
+		var url = $('#addProgram').val();
+		if(event.keyCode === 13 ){
+			if ( !/http:\/\/music.douban.com\/subject\/*/.test(url) ){
+				alert('请输入豆瓣的专辑页网址或节目页网址。')
+				return false;
+			}
+
+			$.ajax({
+				url: 'http://wangaibing.sinaapp.com/csGetAlbumInfo',
+				type : 'get',
+				dataType: "json",
+		    	data: {
+		    		'url':url,
+		    	},
+		    	success: function (res) {
+	             	if ( res && res['attrs'] && res['attrs']['songs'] ){
+	             		var name = res['title'];
+						var num = url ;
+						var list = $('#extra').children();
+						var isHas = 0;
+						for(var i= 0;i<list.length;i++){
+							if( $(list[i]).children('.num').text() === num){
+								isHas = 1;
+								break;
+							}
+						}
+						if(!isHas){
+							$('#extra').append('<li><span class="name">'+name+'</span><span class="num">'+num+'</span><span class="del">X</span></li>');
+						}
+						//删除频道事件绑定
+						$('.del').unbind().bind('click',del);
+	             	}else{
+	             		alert('这个页面没有可以放得歌曲(╯‵□′)╯︵┻━┻');
+	             	}
+		    	},
+		    	error:function(){alert('这个页面没有可以放得歌曲(╯‵□′)╯︵┻━┻');},
+		    });
+			
+		}
+	});
+
 	//搜索保存并退出
 	$('#searchSave').click(function(){
 		var extra = $('#extra').children();
 		var list = [];
 
 		for(var i=0;i<extra.length;i++){
-			var chnNumber =  parseInt($(extra[i]).children('.num').text(),10);
+			var chnNumber =  $(extra[i]).children('.num').text();
 			var chnName  =$(extra[i]).children('.name').text();
 			var one = chnNumber+"|"+chnName;
 			var isHas = 0;
 			list.push(one);
 			for(var j=0;j<$('#channel>option').length;j++){
-		    	if(parseInt($('#channel>option')[j].value,10) === chnNumber){
+		    	if( $('#channel>option')[j].value === chnNumber){
 		    		isHas = 1;
 		    		break;
 		    	}
@@ -307,7 +350,11 @@ $(document).ready(function(){
 
 	$('#channel').change(function(){
 		var value = $('#channel').val();
-		fm.postMessage({cmd: 'channel',channel:value});
+		if ( Number(value) ){
+			fm.postMessage({cmd: 'channel',channel:value});
+		}else{
+			fm.postMessage({cmd: 'addProgram',programID:value});
+		}
 	});
 
 	$('#shareSina').click(function(){

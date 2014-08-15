@@ -96,6 +96,28 @@ $(document).ready(function(){
 	    });
 	};
 
+	var getProgramList = function(programUrl,fn){
+        $.ajax({
+			url: 'http://wangaibing.sinaapp.com/csGetAlbumSongsInfo?url=http://music.douban.com/subject/25716528/',
+			type : 'get',
+			dataType: "json",
+	    	
+	    	success: function (res) {
+	    		var sdata = JSON.parse(res)['data'];
+	    		console.log(sdata);
+             	if ( sdata  ){
+             		var dataLength = sdata.length;
+					sdata[ dataLength-1 ]['backLength'] = dataLength ;
+					for(var i= 0; i<dataLength; i++){
+						list.push(  sdata[i] );
+					}
+					if (fn) {fn();}
+				    currentStatus();
+             	}
+            }
+        });
+	};
+
 	var creatNotification = function(lrc,title,pic,noticeTime){
 		//桌面通知初始化
 		if( notification ){
@@ -137,6 +159,11 @@ $(document).ready(function(){
 				creatNotification('请稍后……','Clumsy Sounder');
 			}
 		}else{		
+			if ( list[current-1] && list[current-1].backLength ){
+				current -= list[current-1].backLength;
+				playSongs();
+				return false;
+			}
 			getList(type,channel,playSongs);
 		}
 		
@@ -194,8 +221,10 @@ $(document).ready(function(){
 				case 'play':
 				if(inMiddle){
 					$('#player')[0].play();	
-				}else{
+				}else if (msg.playChannel){
 					getList(type,channel,playSongs);
+				}else{
+					getProgramList(localStorage.channel,playSongs);
 				}
 				chrome.browserAction.setIcon({path: 'icon.png'});
 				break;
@@ -316,6 +345,12 @@ $(document).ready(function(){
 				case 'share':
 				var song = list[current-1];
 				fm.postMessage({cmd: 'shareInfo',title:song.title,artist:song.artist,url:song.songId,pic:song.picture,from:msg.from});
+				break;
+
+				case 'addProgram':
+                var programUrl = localStorage.channel = msg.programID;
+				list.splice(current,list.length-current+1);
+				getProgramList(programUrl,playSongs);
 				break;
 
 			}
